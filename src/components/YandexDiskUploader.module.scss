@@ -47,7 +47,7 @@
     height: 40px;
 
     &:hover {
-        background-color: #ffd21f;
+        background-color: #eec10f;
     }
 
     &:active {
@@ -61,31 +61,4 @@
         opacity: .4;
     }
 }
-.items {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 20px;
-}
-.item {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    padding: 10px 20px;
-    box-shadow: 0 0 5px 0 rgba(0,0,0,.2);
-    border-radius: 10px;
-}
-.info {
 
-}
-.images {
-    width: 70px;
-    height: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-.image {
-    width: 100%;
-}
