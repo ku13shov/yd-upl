@@ -1,91 +1,71 @@
-import React, { useState } from 'react';
-import { useRef } from 'react';
-import './YandexDiskUploader.css';
+import React, { useRef, useState } from 'react';
+import styles from './YandexDiskUploader.module.scss';
+import chooseImg from '../images/folder.png';
 
 const YandexDiskUploader = () => {
-    const [selectedFile, setSelectedFile] = useState(null);
+    const [files, setFiles] = useState(null);
     const [uploadedFile, setUploadedFile] = useState(null);
     const [uploadedFileLink, setUploadedFileLink] = useState([]);
+    const [imageInfo, setImageInfo] = useState([]);
+
+    const inputRef = useRef(null);
 
     const handleFileChange = (event) => {
+        setImageInfo([]);
+
         const files = event.target.files;
         const selectedFiles = Array.from(files);
-        setSelectedFile(selectedFiles);
+        setFiles(selectedFiles);
 
-        selectedFiles.forEach(async (element) => {
-            console.log(element);
+        selectedFiles.forEach((file) => {
+            const reader = new FileReader();
 
-            try {
-                const response = await fetch(
-                    `https://cloud-api.yandex.net/v1/disk/resources/upload?path=disk:/new/${element.name}`,
-                    {
-                        method: 'GET',
-                        headers: {
-                            Authorization:
-                                'OAuth y0_AgAEA7qkNSbIAADLWwAAAADoxlHILceEXJlDTuKYZC0ydPybgDfIAGE',
-                        },
-                    },
-                );
+            reader.onload = (e) => {
+                const imageData = e.target.result;
+                setImageInfo((prev) => [...prev, imageData]);
+            };
 
-                if (response.ok) {
-                    const result = await response.json();
-                    console.log(result.href);
-                    setUploadedFileLink((prev) => {
-                        return [...prev, result.href];
-                    });
-                    setUploadedFile(selectedFile);
-                } else {
-                    console.error('Failed to upload file to Yandex.Disk');
-                }
-            } catch (error) {
-                console.error('Error during file upload', error);
-            } finally {
-                console.log('finally');
-            }
+            reader.readAsDataURL(file);
         });
+
+        // selectedFiles.forEach(async (element) => {
+        //     console.log(element);
+
+        //     try {
+        //         const response = await fetch(
+        //             `https://cloud-api.yandex.net/v1/disk/resources/upload?path=disk:/new/${element.name}`,
+        //             {
+        //                 method: 'GET',
+        //                 headers: {
+        //                     Authorization:
+        //                         'OAuth y0_AgAEA7qkNSbIAADLWwAAAADoxlHILceEXJlDTuKYZC0ydPybgDfIAGE',
+        //                 },
+        //             },
+        //         );
+
+        //         if (response.ok) {
+        //             const result = await response.json();
+        //             console.log(response);
+        //             setUploadedFileLink((prev) => {
+        //                 return [...prev, result.href];
+        //             });
+        //             setUploadedFile(files);
+        //         } else {
+        //             console.error('Failed to upload file to Yandex.Disk');
+        //         }
+        //     } catch (error) {
+        //         console.error('Error during file upload', error);
+        //     } finally {
+        //         console.log('finally');
+        //     }
+        // });
     };
 
-    const handleUpload = () => {
-        if (selectedFile) {
-            const formData = new FormData();
-            formData.append('file', selectedFile);
-            setUploadedFile(selectedFile);
-
-            selectedFile.forEach(async (element) => {
-                console.log(element);
-
-                try {
-                    const response = await fetch(
-                        `https://cloud-api.yandex.net/v1/disk/resources/upload?path=disk:/new/${element.name}`,
-                        {
-                            method: 'GET',
-                            headers: {
-                                Authorization:
-                                    'OAuth y0_AgAEA7qkNSbIAADLWwAAAADoxlHILceEXJlDTuKYZC0ydPybgDfIAGE',
-                            },
-                        },
-                    );
-
-                    if (response.ok) {
-                        const result = await response.json();
-                        console.log(result.href);
-                        setUploadedFileLink((prev) => {
-                            return [...prev, result.href];
-                        });
-                        setUploadedFile(selectedFile);
-                    } else {
-                        console.error('Failed to upload file to Yandex.Disk');
-                    }
-                } catch (error) {
-                    console.error('Error during file upload', error);
-                }
-            });
-        }
-    };
-
-    const handleUpload1 = async () => {
-        if (selectedFile) {
+    const handleUpload = async () => {
+        if (files) {
             console.log(uploadedFileLink);
+
+            setUploadedFile(files);
 
             uploadedFileLink.forEach(async (link) => {
                 try {
@@ -95,7 +75,7 @@ const YandexDiskUploader = () => {
 
                     if (response.ok) {
                         const result = await response.json();
-                        setUploadedFile(selectedFile);
+                        setUploadedFile(files);
                     } else {
                         console.error('Failed to upload file to Yandex.Disk');
                     }
@@ -107,25 +87,53 @@ const YandexDiskUploader = () => {
     };
 
     return (
-        <div className="container">
-            <div className="file-input-wrapper">
-                <input type="file" onChange={handleFileChange} multiple />
+        <div>
+            <a
+                className={styles.link}
+                href="https://disk.yandex.ru/d/D3xm1IddBDzSYQ"
+                target="_blank"
+                rel="noreferrer">
+                Ссылка на папку на яндекс диске
+            </a>
+            <div>
+                <label className={styles.choose} htmlFor="upload">
+                    <img className={styles['choose-img']} src={chooseImg} alt="choose icon" />
+                    Выбрать файлы
+                </label>
+                <input
+                    className={styles.input}
+                    ref={inputRef}
+                    id="upload"
+                    type="file"
+                    onChange={handleFileChange}
+                    multiple
+                    accept=".jpg,.png,.webp"
+                />
             </div>
 
-            <button className="upload-button" onClick={handleUpload}>
-                Сформировать ссылки для загрузки
-            </button>
-            <button className="upload-button" onClick={handleUpload1}>
+            <button
+                className={styles.upload}
+                onClick={handleUpload}
+                disabled={files ? false : true}>
                 Загрузить
             </button>
 
-            {uploadedFile && (
-                <div>
-                    <p>Uploaded file: {uploadedFile.name}</p>
-                    <p>File size: {uploadedFile.size} bytes</p>
-                    <p>File type: {uploadedFile.type}</p>
-                </div>
-            )}
+            <div className={styles.items}>
+                {files?.map((file, i) => {
+                    return (
+                        <div className={styles.item} key={file.lastModified}>
+                            <div className={styles.images}>
+                                {<img className={styles.image} src={imageInfo[i]} alt="" />}
+                            </div>
+
+                            <div>
+                                <div>{file.name}</div>
+                                <div>{Math.round(+file.size / 1000)} Kb</div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
         </div>
     );
 };
