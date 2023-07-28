@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/yd-upl/static/css/main.549b94c5.css",
-    "main.js": "/yd-upl/static/js/main.dcf78996.js",
+    "main.css": "/yd-upl/static/css/main.e1cd05ab.css",
+    "main.js": "/yd-upl/static/js/main.986bd030.js",
     "index.html": "/yd-upl/index.html",
-    "main.549b94c5.css.map": "/yd-upl/static/css/main.549b94c5.css.map",
-    "main.dcf78996.js.map": "/yd-upl/static/js/main.dcf78996.js.map"
+    "main.e1cd05ab.css.map": "/yd-upl/static/css/main.e1cd05ab.css.map",
+    "main.986bd030.js.map": "/yd-upl/static/js/main.986bd030.js.map"
   },
   "entrypoints": [
-    "static/css/main.549b94c5.css",
-    "static/js/main.dcf78996.js"
+    "static/css/main.e1cd05ab.css",
+    "static/js/main.986bd030.js"
   ]
 }
