@@ -2,18 +2,23 @@ import React, { useRef, useState } from 'react';
 import styles from './YandexDiskUploader.module.scss';
 import chooseImg from '../images/folder.png';
 import Items from './Items';
+import Loading from './Loading';
 
 const YandexDiskUploader = () => {
+    const [files, setFiles] = useState([]);
     const [imageInfo, setImageInfo] = useState([]);
     const [uploadInfo, setUploadInfo] = useState([]);
+    const [count, setCount] = useState(0);
 
     const inputRef = useRef(null);
 
     const handleFileChange = (event) => {
         setUploadInfo([]);
+        setCount(0);
 
         const files = event.target.files;
         const selectedFiles = Array.from(files);
+        setFiles(selectedFiles);
 
         selectedFiles.forEach((file, i) => {
             const reader = new FileReader();
@@ -68,6 +73,7 @@ const YandexDiskUploader = () => {
 
                     if (response.ok) {
                         console.log('файлы загружены');
+                        setCount((prev) => prev + 1);
                     } else {
                         console.error('Failed to upload file to Yandex.Disk');
                     }
@@ -82,10 +88,10 @@ const YandexDiskUploader = () => {
     };
 
     return (
-        <div>
+        <div className={styles.loader}>
             <a
                 className={styles.link}
-                href="https://disk.yandex.ru/d/D3xm1IddBDzSYQ"
+                href="https://disk.yandex.ru/d/v_e6fQbtyP8iqg"
                 target="_blank"
                 rel="noreferrer">
                 Ссылка на папку на яндекс диске
@@ -110,11 +116,15 @@ const YandexDiskUploader = () => {
             <button
                 className={styles.upload}
                 onClick={handleUpload}
-                disabled={uploadInfo.length > 0 ? false : true}>
+                disabled={
+                    uploadInfo.length === files.length && uploadInfo.length !== 0 ? false : true
+                }>
                 Загрузить
             </button>
 
             {uploadInfo.length > 0 && <Items uploadInfo={uploadInfo} imageInfo={imageInfo} />}
+
+            {count !== 0 && <Loading count={count} files={files} />}
         </div>
     );
 };
