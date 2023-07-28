@@ -4,20 +4,16 @@ import chooseImg from '../images/folder.png';
 import Items from './Items';
 
 const YandexDiskUploader = () => {
-    const [files, setFiles] = useState(null);
-    const [uploadedFile, setUploadedFile] = useState(null);
-    const [uploadedFileLink, setUploadedFileLink] = useState([]);
     const [imageInfo, setImageInfo] = useState([]);
+    const [uploadInfo, setUploadInfo] = useState([]);
 
     const inputRef = useRef(null);
 
     const handleFileChange = (event) => {
-        setImageInfo([]);
-        setUploadedFileLink([]);
+        setUploadInfo([]);
 
         const files = event.target.files;
         const selectedFiles = Array.from(files);
-        setFiles(selectedFiles);
 
         selectedFiles.forEach((file, i) => {
             const reader = new FileReader();
@@ -31,8 +27,6 @@ const YandexDiskUploader = () => {
         });
 
         selectedFiles.forEach(async (element) => {
-            console.log(element);
-
             try {
                 const response = await fetch(
                     `https://cloud-api.yandex.net/v1/disk/resources/upload?path=disk:/new/${element.name}&overwrite=true`,
@@ -47,57 +41,43 @@ const YandexDiskUploader = () => {
 
                 if (response.ok) {
                     const result = await response.json();
-                    console.log(response);
-                    setUploadedFileLink((prev) => {
-                        return [...prev, result.href];
+
+                    setUploadInfo((prev) => {
+                        return [...prev, { file: element, href: result.href }];
                     });
-                    // setUploadedFile(files);
                 } else {
                     console.error('Failed to upload file to Yandex.Disk');
                 }
             } catch (error) {
                 console.error('Error during file upload', error);
-            } finally {
-                console.log('finally');
             }
         });
     };
 
     const handleUpload = () => {
-        if (files) {
-            const formData = new FormData();
-            
+        if (uploadInfo.length > 0) {
+            uploadInfo.forEach(async (obj) => {
+                const formData = new FormData();
+                formData.append('file', obj.file);
 
-            files.forEach(file => {
-                formData.append('file', file);
+                try {
+                    const response = await fetch(obj.href, {
+                        method: 'PUT',
+                        body: formData,
+                    });
 
-                uploadedFileLink.forEach(async (link) => {
-                    console.log(formData);
-                    try {
-                        const response = await fetch(link, {
-                            method: 'PUT',
-                            body: formData,
-                        });
-    
-                        if (response.ok) {
-                            const result = await response.json();
-                            // setUploadedFile(files);
-                        } else {
-                            console.error('Failed to upload file to Yandex.Disk');
-                        }
-                    } catch (error) {
-                        console.error('Error during file upload', error);
-                    } finally {
-                        setUploadedFileLink([]);
-                        setFiles([]);
+                    if (response.ok) {
+                        console.log('файлы загружены');
+                    } else {
+                        console.error('Failed to upload file to Yandex.Disk');
                     }
-                });
-            })
-
-            // console.log(files);
-            // setUploadedFile(files);
-
-
+                } catch (error) {
+                    console.error('Error during file upload', error);
+                } finally {
+                    setImageInfo([]);
+                    setUploadInfo([]);
+                }
+            });
         }
     };
 
@@ -124,17 +104,17 @@ const YandexDiskUploader = () => {
                     multiple
                     accept=".jpg,.png,.webp"
                 />
-                <p>Выбрано файлов: {files ? files.length : 0}</p>
+                <p>Выбрано файлов: {uploadInfo ? uploadInfo.length : 0}</p>
             </div>
 
             <button
                 className={styles.upload}
                 onClick={handleUpload}
-                disabled={uploadedFileLink.length > 0 ? false : true}>
+                disabled={uploadInfo.length > 0 ? false : true}>
                 Загрузить
             </button>
 
-            {files && <Items files={files} imageInfo={imageInfo} />}
+            {uploadInfo.length > 0 && <Items uploadInfo={uploadInfo} imageInfo={imageInfo} />}
         </div>
     );
 };

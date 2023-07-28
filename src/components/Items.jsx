@@ -1,6 +1,6 @@
 import styles from './Items.module.scss';
 
-const Items = ({ files, imageInfo }) => {
+const Items = ({ uploadInfo, imageInfo }) => {
     const displayName = (name) => {
         const MAX_NAME_LENGTH = 10;
 
@@ -21,7 +21,7 @@ const Items = ({ files, imageInfo }) => {
 
     return (
         <div className={styles.items}>
-            {files?.map((file, i) => {
+            {uploadInfo?.map((obj, i) => {
                 return (
                     <div className={styles.item} key={i}>
                         <div className={styles.images}>
@@ -29,8 +29,8 @@ const Items = ({ files, imageInfo }) => {
                         </div>
 
                         <div className={styles.info}>
-                            <div className={styles.name}>{displayName(file.name)}</div>
-                            <div className={styles.size}>{Math.round(+file.size / 1000)} Kb</div>
+                            <div className={styles.name}>{displayName(obj.file.name)}</div>
+                            <div className={styles.size}>{Math.round(+obj.file.size / 1000)} Kb</div>
                         </div>
                     </div>
                 );
