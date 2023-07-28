@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/yd-upl/static/css/main.549b94c5.css",
+    "main.js": "/yd-upl/static/js/main.dcf78996.js",
+    "index.html": "/yd-upl/index.html",
+    "main.549b94c5.css.map": "/yd-upl/static/css/main.549b94c5.css.map",
+    "main.dcf78996.js.map": "/yd-upl/static/js/main.dcf78996.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.549b94c5.css",
+    "static/js/main.dcf78996.js"
+  ]
+}
