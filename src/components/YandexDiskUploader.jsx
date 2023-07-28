@@ -1,20 +1,24 @@
 import React, { useRef, useState } from 'react';
+
 import styles from './YandexDiskUploader.module.scss';
 import chooseImg from '../images/folder.png';
 import Items from './Items';
 import Loading from './Loading';
+import Error from './Error';
 
 const YandexDiskUploader = () => {
     const [files, setFiles] = useState([]);
     const [imageInfo, setImageInfo] = useState([]);
     const [uploadInfo, setUploadInfo] = useState([]);
     const [count, setCount] = useState(0);
+    const [error, setError] = useState(false);
 
     const inputRef = useRef(null);
 
     const handleFileChange = (event) => {
         setUploadInfo([]);
         setCount(0);
+        setError(false);
 
         const files = event.target.files;
         const selectedFiles = Array.from(files);
@@ -55,6 +59,9 @@ const YandexDiskUploader = () => {
                 }
             } catch (error) {
                 console.error('Error during file upload', error);
+                setError(true);
+                setImageInfo([]);
+                setUploadInfo([]);
             }
         });
     };
@@ -72,13 +79,15 @@ const YandexDiskUploader = () => {
                     });
 
                     if (response.ok) {
-                        console.log('файлы загружены');
                         setCount((prev) => prev + 1);
                     } else {
                         console.error('Failed to upload file to Yandex.Disk');
                     }
                 } catch (error) {
                     console.error('Error during file upload', error);
+                    setError(true);
+                    setImageInfo([]);
+                    setUploadInfo([]);
                 } finally {
                     setImageInfo([]);
                     setUploadInfo([]);
@@ -121,6 +130,8 @@ const YandexDiskUploader = () => {
                 }>
                 Загрузить
             </button>
+
+            {error && <Error />}
 
             {uploadInfo.length > 0 && <Items uploadInfo={uploadInfo} imageInfo={imageInfo} />}
 
