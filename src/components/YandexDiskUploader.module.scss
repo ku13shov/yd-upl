@@ -39,6 +39,25 @@
 .input {
     display: none;
 }
+.counter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.loader_image {
+    width: 50px;
+    height: 50px;
+    animation: rotation 3s linear infinite;
+}
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
 .upload {
     background-color: #ffd21f;
     border: none;
@@ -63,7 +82,6 @@
         background-color: #f8e7a5;
         transform: none;
         cursor: default;
-        opacity: .4;
+        opacity: 0.4;
     }
 }
-

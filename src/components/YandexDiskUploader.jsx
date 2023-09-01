@@ -5,6 +5,7 @@ import chooseImg from '../images/folder.png';
 import Items from './Items';
 import Loading from './Loading';
 import Error from './Error';
+import loader from '../images/loader.png';
 
 const YandexDiskUploader = () => {
     const [files, setFiles] = useState([]);
@@ -120,7 +121,14 @@ const YandexDiskUploader = () => {
                     multiple
                     accept=".jpg,.png,.webp"
                 />
-                <p>Выбрано файлов: {uploadInfo ? uploadInfo.length : 0}</p>
+                <div className={styles.counter}>
+                    <p>Выбрано файлов: {uploadInfo ? uploadInfo.length : 0} </p>
+                    {uploadInfo.length === files.length ? (
+                        ''
+                    ) : (
+                        <img className={styles.loader_image} src={loader} alt="loader" />
+                    )}
+                </div>
             </div>
 
             <button
@@ -129,7 +137,12 @@ const YandexDiskUploader = () => {
                 disabled={
                     uploadInfo.length === files.length && uploadInfo.length !== 0 ? false : true
                 }>
-                Загрузить
+                {/* Загрузить */}
+                {uploadInfo.length === files.length ? (
+                    'Загрузить'
+                ) : (
+                    'Загрузка'
+                )}
             </button>
 
             {error && <Error />}
