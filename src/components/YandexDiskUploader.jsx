@@ -17,6 +17,7 @@ const YandexDiskUploader = () => {
 
     const handleFileChange = (event) => {
         setUploadInfo([]);
+        setImageInfo([]);
         setCount(0);
         setError(false);
 
@@ -28,7 +29,7 @@ const YandexDiskUploader = () => {
             const reader = new FileReader();
 
             reader.onload = (e) => {
-                const imageData = { src: e.target.result, index: i };
+                const imageData = { src: e.target.result, size: e.total };
                 setImageInfo((prev) => [...prev, imageData]);
             };
 
