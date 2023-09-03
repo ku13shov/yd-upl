@@ -98,6 +98,26 @@ const YandexDiskUploader = () => {
         }
     };
 
+    const renderLoaderImg = () => {
+        if (uploadInfo.length === files.length) {
+            return;
+        } else if (count !== 0) {
+            return;
+        } else {
+            return <img className={styles.loader_image} src={loader} alt="loader" />;
+        }
+    };
+
+    const renderLoadingOrDone = () => {
+        if (count === files.length && count !== 0) {
+            return <p className={styles.done}>Загрузка завершена</p>;
+        } else if (count !== 0) {
+            return <Loading count={count} files={files} />;
+        } else {
+            return;
+        }
+    };
+
     return (
         <div className={styles.loader}>
             <a
@@ -123,11 +143,7 @@ const YandexDiskUploader = () => {
                 />
                 <div className={styles.counter}>
                     <p>Выбрано файлов: {uploadInfo ? uploadInfo.length : 0} </p>
-                    {uploadInfo.length === files.length ? (
-                        ''
-                    ) : (
-                        <img className={styles.loader_image} src={loader} alt="loader" />
-                    )}
+                    {renderLoaderImg()}
                 </div>
             </div>
 
@@ -137,19 +153,14 @@ const YandexDiskUploader = () => {
                 disabled={
                     uploadInfo.length === files.length && uploadInfo.length !== 0 ? false : true
                 }>
-                {/* Загрузить */}
-                {uploadInfo.length === files.length ? (
-                    'Загрузить'
-                ) : (
-                    'Загрузка'
-                )}
+                {uploadInfo.length === files.length ? 'Загрузить' : 'Загрузка'}
             </button>
 
             {error && <Error />}
 
             {uploadInfo.length > 0 && <Items uploadInfo={uploadInfo} imageInfo={imageInfo} />}
 
-            {count !== 0 && <Loading count={count} files={files} />}
+            {renderLoadingOrDone()}
         </div>
     );
 };
